@@ -38,6 +38,9 @@ npm-debug.log*
 coverage/
 docs/.vitepress/cache/
 
-#zFlow agent
+# zFlow agent
 .zflow/
 .dual-graph-context/
+
+# Local Zoe config (per-user settings, sessions, keys)
+.zoe/
