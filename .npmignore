@@ -1,0 +1,34 @@
+# Source (only dist/ is published)
+src/
+tsconfig.json
+
+# Environment
+.env
+.env.*
+.env.example
+
+# Development
+node_modules/
+.vscode/
+.idea/
+.claude/
+.dual-graph/
+.qwen/
+
+# Install scripts (not needed in npm package)
+install.bat
+install.sh
+
+# Docs not needed at runtime
+CLAUDE.md
+GEMINI.md
+CONTRIBUTING.md
+FEATURES.md
+docs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

@@ -1,0 +1,72 @@
+# =============================================================================
+# Zoe Docker Compose — Server Mode
+# =============================================================================
+# Start:     docker compose up -d
+# Logs:      docker compose logs -f zoe
+# Stop:      docker compose down
+# Rebuild:  docker compose up -d --build
+#
+# Create a .env file from .env.example before starting.
+# =============================================================================
+
+services:
+  zoe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: zoe:latest
+    container_name: zoe-server
+    restart: unless-stopped
+
+    # Load environment variables from .env file
+    env_file:
+      - path: .env
+        required: false
+
+    # Runtime environment overrides
+    environment:
+      - ZOE_SHELL_APPROVE=auto   # auto-approve shell commands in container
+      - ZOE_SESSION_DIR=/data/sessions
+
+    # Port mapping — server listens on 7337 by default
+    ports:
+      - "7337:7337"
+
+    # Persistent volume mounts
+    volumes:
+      # Session data persists across restarts
+      - zoe-sessions:/data/sessions
+      # Mount custom skills into the container
+      - ./skills:/mnt/skills:ro
+      # Working directory for agent file operations
+      - ./workspace:/workspace
+
+    # Health check mirrors the Dockerfile HEALTHCHECK
+    healthcheck:
+      test: ["CMD", "node", "-e",
+        "const http = require('http'); \
+         const req = http.get('http://localhost:7337/v1/health', (res) => { \
+           process.exit(res.statusCode === 200 ? 0 : 1); \
+         }); \
+         req.on('error', () => process.exit(1)); \
+         req.setTimeout(5000, () => { req.destroy(); process.exit(1); });"]
+      interval: 30s
+      timeout: 10s
+      start_period: 15s
+      retries: 3
+
+    # Security: limit capabilities
+    security_opt:
+      - no-new-privileges:true
+
+    # Resource limits (adjust based on workload)
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+
+volumes:
+  zoe-sessions:
+    driver: local

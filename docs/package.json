@@ -1,0 +1,20 @@
+{
+  "name": "zoe-docs",
+  "version": "1.0.0",
+  "description": "Documentation for Zoe Agent - Headless AI agent framework",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

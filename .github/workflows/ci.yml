@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm exec tsc --noEmit
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm run build
+
+      # T055: React/Ink must stay out of headless builds. The TUI is loaded
+      # only via a dynamic import guarded by resolveLaunchMode(), so none of
+      # the headless outputs (repl, entry, bootstrap, agent, server, sdk, core)
+      # may statically reference jsx-runtime. Fails the build if it leaks.
+      - name: Assert no JSX in headless outputs
+        run: |
+          set -e
+          if grep -rlE "jsx-runtime" \
+              dist/adapters/cli/repl.js \
+              dist/adapters/cli/index.js \
+              dist/adapters/cli/bootstrap.js \
+              dist/adapters/cli/agent.js \
+              dist/adapters/server \
+              dist/adapters/sdk \
+              dist/core 2>/dev/null; then
+            echo "::error::React/JSX leaked into a headless build output"
+            exit 1
+          fi
+          echo "OK: no jsx-runtime in headless outputs"
