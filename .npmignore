@@ -2,6 +2,15 @@
 src/
 tsconfig.json
 
+# Tests (defense-in-depth: tsconfig excludes them from the build,
+# these rules catch them if they ever slip back into dist/)
+dist/**/__tests__/
+dist/**/__mocks__/
+**/*.test.js
+**/*.test.d.ts
+**/*.spec.js
+**/*.spec.d.ts
+
 # Environment
 .env
 .env.*

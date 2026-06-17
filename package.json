@@ -1,6 +1,6 @@
 {
   "name": "zoe-agent",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "main": "dist/adapters/cli/index.js",
   "exports": {
@@ -37,7 +37,6 @@
     "dist/skills",
     "dist/gateway",
     "dist/models-catalog.js",
-    "dist/agent.js",
     "skills",
     "README.md",
     "CHANGELOG.md",
