@@ -28,7 +28,7 @@ process.on('SIGTERM', handleExit);
 dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const pkgPath = path.join(__dirname, '..', 'package.json');
+const pkgPath = path.join(__dirname, '..', '..', '..', 'package.json');
 let version = '0.2.2';
 
 try {
